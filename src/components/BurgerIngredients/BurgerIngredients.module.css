@@ -1,0 +1,23 @@
+.section {
+    width: 600px;
+    min-height: 0;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.categories {
+    flex: 1;
+    overflow-y: scroll;
+}
+
+.categories::-webkit-scrollbar {
+    background: #2F2F37;
+    width: 8px;
+    border-radius: 0;
+}
+
+.categories::-webkit-scrollbar-thumb {
+    background: #8585AD;
+    border-radius: 0;
+}
