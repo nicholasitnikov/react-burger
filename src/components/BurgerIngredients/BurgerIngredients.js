@@ -1,14 +1,17 @@
 
-import IngredientsTab from '../IngredientsTab/IngredientsTab';
+import IngredientsTabs from '../IngredientsTabs/IngredientsTabs';
 import styles from './BurgerIngredients.module.css';
 import IngredientsCategory from '../IngredientsCategory/IngredientsCategory';
 import PropTypes from 'prop-types';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import propTypes from '../../utils/propTypes'
+
+import categories from '../../utils/categories';
 
 
 const BurgerIngredients = (props) => {
 
-    const [currentType, setCurrentType] = useState(props.categories[0].slug);
+    const [currentType, setCurrentType] = useState(categories[0].slug);
     const categoriesRef = useRef({});
 
     const setCategoryRef = (slug, ref) => {
@@ -17,7 +20,7 @@ const BurgerIngredients = (props) => {
 
     const ingredientClickHandler = useCallback((id) => {
         props.onClick(id);
-    }, [props])
+    }, [props.onClick])
 
     const tabClickHandler = (type) => {
         setCurrentType(type)
@@ -30,7 +33,7 @@ const BurgerIngredients = (props) => {
 
     const renderCategories = useMemo(() => {
 
-        return props.categories.map((category, index)=> {
+        return categories.map((category, index)=> {
             const ref = categoriesRef.current[category.slug];
             const element = <IngredientsCategory
                 setCategoryRef={setCategoryRef}
@@ -50,7 +53,7 @@ const BurgerIngredients = (props) => {
     return(
         <section className={`${styles.section} mr-10`}>
             <h1 className="text text_type_main-large pt-10 pb-5">Соберите бургер</h1>
-            <IngredientsTab currentType={currentType} onClick={tabClickHandler} />
+            <IngredientsTabs currentType={currentType} onClick={tabClickHandler} />
             <div className={styles.categories}>
                 { renderCategories }
             </div>
@@ -59,39 +62,13 @@ const BurgerIngredients = (props) => {
 }
 
 BurgerIngredients.propTypes = {
-    data: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
-        name: PropTypes.string,
-        type: PropTypes.string,
-        proteins: PropTypes.number,
-        fat: PropTypes.number,
-        carbohydrates: PropTypes.number,
-        calories: PropTypes.number,
-        price: PropTypes.number,
-        image: PropTypes.string,
-        image_mobile: PropTypes.string,
-        image_large: PropTypes.string,
-        __v: PropTypes.number
-    })),
+    data: PropTypes.arrayOf(PropTypes.shape(propTypes.order)),
+    order: PropTypes.arrayOf(PropTypes.shape(propTypes.data)),
     categories: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string,
-        slug: PropTypes.string
+        name: PropTypes.string.isRequired,
+        slug: PropTypes.string.isRequired
     })),
-    order: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
-        name: PropTypes.string,
-        type: PropTypes.string,
-        proteins: PropTypes.number,
-        fat: PropTypes.number,
-        carbohydrates: PropTypes.number,
-        calories: PropTypes.number,
-        price: PropTypes.number,
-        image: PropTypes.string,
-        image_mobile: PropTypes.string,
-        image_large: PropTypes.string,
-        __v: PropTypes.number
-    })),
-    onClick: PropTypes.func
+    onClick: PropTypes.func.isRequired
 }
 
 

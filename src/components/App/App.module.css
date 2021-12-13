@@ -6,17 +6,3 @@
     min-height: 0;
     overflow-y: hidden;
 }
-
-.body {
-    max-height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.root {
-    min-height: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}

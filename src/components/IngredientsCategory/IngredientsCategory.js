@@ -2,12 +2,13 @@ import Ingredient from "../Ingredient/Ingredient";
 import styles from './IngredientsCategory.module.css';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import propTypes from '../../utils/propTypes';
 
 const IngredientsCategory = (props) => {
     
     const ingredientClickHandler = useCallback((id) => {
         props.onClick(id);
-    }, [props])
+    }, [props.onClick])
 
     const ref = useRef();
 
@@ -38,39 +39,13 @@ const IngredientsCategory = (props) => {
 }
 
 IngredientsCategory.propTypes = {
-    heading: PropTypes.string,
-    slug: PropTypes.string,
-    data: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
-        name: PropTypes.string,
-        type: PropTypes.string,
-        proteins: PropTypes.number,
-        fat: PropTypes.number,
-        carbohydrates: PropTypes.number,
-        calories: PropTypes.number,
-        price: PropTypes.number,
-        image: PropTypes.string,
-        image_mobile: PropTypes.string,
-        image_large: PropTypes.string,
-        __v: PropTypes.number
-    })),
-    order: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
-        name: PropTypes.string,
-        type: PropTypes.string,
-        proteins: PropTypes.number,
-        fat: PropTypes.number,
-        carbohydrates: PropTypes.number,
-        calories: PropTypes.number,
-        price: PropTypes.number,
-        image: PropTypes.string,
-        image_mobile: PropTypes.string,
-        image_large: PropTypes.string,
-        __v: PropTypes.number
-    })),
-    onClick: PropTypes.func,
-    onTypeInView: PropTypes.func,
-    setCategoryRef: PropTypes.func
+    heading: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
+    data: PropTypes.arrayOf(PropTypes.shape(propTypes.order)),
+    order: PropTypes.arrayOf(PropTypes.shape(propTypes.data)),
+    onClick: PropTypes.func.isRequired,
+    onTypeInView: PropTypes.func.isRequired,
+    setCategoryRef: PropTypes.func.isRequired
 }
 
 

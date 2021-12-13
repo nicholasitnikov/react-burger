@@ -10,8 +10,16 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.ingredients {
     flex: 1;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .items::-webkit-scrollbar {

@@ -4,7 +4,6 @@ import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import styles from './App.module.css';
 import data from '../../utils/data';
-import categories from '../../utils/categories';
 import { useState, useCallback } from 'react';
 
 const App = () => {
@@ -42,27 +41,17 @@ const App = () => {
   
   }, [order])
 
-  const controctorItemClickHandler = useCallback((id) => {
-    let prevOrder = [...order].filter(el => el._id !== id);
+  const constructorRemoveClickHandler = useCallback((id) => {
+    const prevOrder = [...order].filter(el => el._id !== id);
     setOrder(prevOrder)
   }, [order])
-
-  useEffect(() => {
-
-    const body = document.querySelector('body');
-    if(body) { body.classList.add(styles.body) };
-
-    const root = document.querySelector('#root');
-    if(root) { root.classList.add(styles.root) };
-
-  }, []);
 
   return (
     <>
       <AppHeader />
       <main className={styles.main}>
-        <BurgerIngredients data={data} categories={categories} order={order} onClick={ingredientClickHandler} />
-        <BurgerConstructor order={order} onClick={controctorItemClickHandler} />
+        <BurgerIngredients data={data} order={order} onClick={ingredientClickHandler} />
+        <BurgerConstructor order={order} onRemove={constructorRemoveClickHandler} />
       </main>
     </>
   );

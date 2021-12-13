@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import PropTypes from 'prop-types';
 
-const IngredientsTab = (props) => {
+const IngredientsTabs = (props) => {
 
     const tabClickHandler = useCallback((slug) => {
       props.onClick(slug);
-    }, [props]);
+    }, [props.onClick]);
     
     return (
       <div style={{ display: 'flex' }}>
@@ -23,9 +23,9 @@ const IngredientsTab = (props) => {
     )
   }
 
-  IngredientsTab.propTypes = {
+  IngredientsTabs.propTypes = {
     onClick: PropTypes.func,
     currentType: PropTypes.string
   }
 
-export default IngredientsTab;
+export default IngredientsTabs;
