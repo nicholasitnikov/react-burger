@@ -1,0 +1,47 @@
+.section {
+    width: 600px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.ingredients {
+    flex: 1;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.items::-webkit-scrollbar {
+    background: #2F2F37;
+    width: 8px;
+    border-radius: 0;
+}
+
+.items::-webkit-scrollbar-thumb {
+    background: #8585AD;
+    border-radius: 0;
+}
+
+.total {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 40px;
+}
+
+.price {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
