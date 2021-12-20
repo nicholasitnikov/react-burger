@@ -11,12 +11,12 @@ const App = () => {
   // const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [order, setOrder] = useState([
-      data.filter((el) => { return el.type === 'bun'; })[0],
-      data.filter((el) => { return el.type === 'bun'; })[0]
+    data.filter((el) => { return el.type === 'bun'; })[0],
+    data.filter((el) => { return el.type === 'bun'; })[0]
   ]);
 
   // useEffect(() => {
-  //   fetch(`${CONSTANTS.API_URL} + ingredients`, {
+  //   fetch(`${CONSTANTS.API_URL}/ingredients`, {
   //     headers: {
   //       'Access-Control-Allow-Origin': '*'
   //     } 
@@ -31,10 +31,10 @@ const App = () => {
   // })
 
   // useEffect(() => {
-    // setOrder([
-    //   data.filter((el) => { return el.type === 'bun'; })[0],
-    //   data.filter((el) => { return el.type === 'bun'; })[0]
-    // ])
+  //   setOrder([
+  //     data.filter((el) => { return el.type === 'bun'; })[0],
+  //     data.filter((el) => { return el.type === 'bun'; })[0]
+  //   ])
   // }, [data])
 
   const ingredientClickHandler = useCallback((id) => {
@@ -75,10 +75,10 @@ const App = () => {
       <AppHeader />
       <main className={styles.main}>
         { isLoading ? <p className="text text_type_main-default text_color_inactive pt-5">Загрузка данных...</p> : 
-          <>
+          (<>
             <BurgerIngredients data={data} order={order} onClick={ingredientClickHandler} />
             <BurgerConstructor order={order} onRemove={constructorRemoveClickHandler} />
-          </>
+          </>)
         }
         
       </main>

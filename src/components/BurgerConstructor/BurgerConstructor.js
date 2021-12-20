@@ -16,13 +16,21 @@ const BurgerConstructor = (props) => {
         props.onRemove(id);
     }, [props.onClick])
 
-    const [modalIsVisible, setModalIsVisible] = useState(false);
+    const [modalIsHidden, setModalIsHidden] = useState(true);
+
+    const openModal = () => {
+        setModalIsHidden(false);
+    }
+
+    const closeModal = () => {
+        setModalIsHidden(true);
+    }
 
     const renderContructorItems = useMemo(() => {
 
         return props.order.filter(el => el.type !== 'bun').map((el, index) => {
 
-            return <ContructorItem 
+            return (<ContructorItem 
                 id={index}
                 key={index}
                 lock={el.type === 'bun' && true}
@@ -30,7 +38,7 @@ const BurgerConstructor = (props) => {
                 price={el.price}
                 thumbnail={el.image}
                 onRemove={constructorRemoveClickHandler}
-            />
+            />)
         
         })
 
@@ -38,7 +46,7 @@ const BurgerConstructor = (props) => {
 
     const renderTopBun = useMemo(() => {
         const data = props.order[0]
-        return <ContructorItem 
+        return (<ContructorItem 
             id={data._id}
             key={0}
             lock={true} 
@@ -47,12 +55,12 @@ const BurgerConstructor = (props) => {
             price={data.price}
             thumbnail={data.image}
             onRemove={constructorRemoveClickHandler}
-        />
+        />)
     }, [props.order, constructorRemoveClickHandler])
 
     const renderBottomBun = useMemo(() => {
         const data = props.order[props.order.length - 1];
-        return <ContructorItem 
+        return (<ContructorItem 
             id={data._id}
             key={props.order.length - 1}
             lock={true} 
@@ -61,16 +69,8 @@ const BurgerConstructor = (props) => {
             price={data.price}
             thumbnail={data.image}
             onRemove={constructorRemoveClickHandler}
-        />
+        />)
     }, [props.order, constructorRemoveClickHandler])
-
-    const completeOrderClickHandler = () => {
-        setModalIsVisible(true);
-    }
-
-    const closeModalHandler = () => {
-        setModalIsVisible(false);
-    }
 
     return(
         <section className={`${styles.section} pt-25`}>
@@ -86,15 +86,13 @@ const BurgerConstructor = (props) => {
                     <p className="text text_type_digits-medium">610</p>
                     <CurrencyIcon type="primary" />
                 </div>
-                <Button type="primary" size="large" onClick={completeOrderClickHandler}>
+                <Button type="primary" size="large" onClick={openModal}>
                     Оформить заказ
                 </Button>
             </div>
-            <ModalOverlay visible={modalIsVisible} heading='' onClose={closeModalHandler}>
-                <Modal>
-                    <OrderDetails />
-                </Modal>
-            </ModalOverlay>
+            <Modal onClose={closeModal} hidden={modalIsHidden}>
+                <OrderDetails />
+            </Modal>
         </section>
     )
 }

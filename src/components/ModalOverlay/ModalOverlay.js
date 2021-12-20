@@ -1,48 +1,17 @@
-import ReactDOM from 'react-dom'
 import styles from './ModalOverlay.module.css';
-import ModalContext from '../../utils/modalContext';
-import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
 const ModalOverlay = (props) => {
+    
+    return ( 
+        <div onClick={props.onClose} className={`${styles.overlay} ${props.hidden ? styles.hidden : ''}`}>
+            { props.children }
+        </div> 
+    )
+}
 
-    useEffect(() => {
-        if(props.content) {
-            setHidden(false);
-        }
-    }, [props.content])
-
-    useEffect(() => {
-        if(props.visible !== undefined) {
-            setHidden(!props.visible)
-        }
-    }, [props.visible])
-
-    const [hidden, setHidden] = useState(true);
-
-    const onModalClose = () => {
-        setHidden(true);
-        if(props.onClose) {
-            props.onClose();
-        }
-    }
-
-    const overlayClickHandler = (e) => {
-        if(e.target.classList.value.indexOf('overlay') > -1) {
-            setHidden(true);
-            if(props.onClose) {
-                props.onClose();
-            }
-        }
-    }
-
-    const target = document.querySelector('body');
-    return ReactDOM.createPortal((
-        <ModalContext.Provider value={{ onModalClose, content: props.content }}>
-            <div onClick={overlayClickHandler} className={`${styles.overlay} ${hidden ? styles.hidden : ''}`}>
-                { props.children }
-            </div>
-        </ModalContext.Provider>
-    ), target);
+ModalOverlay.propTypes = {
+    hidden: PropTypes.bool
 }
 
 export default ModalOverlay;
