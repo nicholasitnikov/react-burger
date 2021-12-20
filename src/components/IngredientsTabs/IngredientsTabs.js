@@ -24,8 +24,8 @@ const IngredientsTabs = (props) => {
   }
 
   IngredientsTabs.propTypes = {
-    onClick: PropTypes.func,
-    currentType: PropTypes.string
+    onClick: PropTypes.func.isRequired,
+    currentType: PropTypes.string.isRequired
   }
 
 export default IngredientsTabs;

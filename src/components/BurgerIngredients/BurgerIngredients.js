@@ -5,22 +5,26 @@ import IngredientsCategory from '../IngredientsCategory/IngredientsCategory';
 import PropTypes from 'prop-types';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import propTypes from '../../utils/propTypes'
-
 import categories from '../../utils/categories';
+import Modal from '../Modal/Modal';
+import ModalOverlay from '../ModalOverlay/ModalOverlay';
+import IngredientDetails from '../IngredientDetails/IngredientDetails';
 
 
 const BurgerIngredients = (props) => {
 
     const [currentType, setCurrentType] = useState(categories[0].slug);
     const categoriesRef = useRef({});
+    const [selectedIngredient, setSelectedIngredient] = useState();
 
     const setCategoryRef = (slug, ref) => {
         categoriesRef.current[slug] = ref;
     }
 
     const ingredientClickHandler = useCallback((id) => {
+        setSelectedIngredient(id);
         props.onClick(id);
-    }, [props.onClick])
+    }, [props.onClick, selectedIngredient])
 
     const tabClickHandler = (type) => {
         setCurrentType(type)
@@ -48,12 +52,17 @@ const BurgerIngredients = (props) => {
             return element;
         })
 
-    }, [props, ingredientClickHandler])
+    }, [props, ingredientClickHandler, selectedIngredient])
 
     return(
         <section className={`${styles.section} mr-10`}>
             <h1 className="text text_type_main-large pt-10 pb-5">Соберите бургер</h1>
             <IngredientsTabs currentType={currentType} onClick={tabClickHandler} />
+            <ModalOverlay content={props.data.find((el) => el._id === selectedIngredient)}>
+                <Modal heading='Детали ингредиента'>
+                    <IngredientDetails />
+                </Modal>
+            </ModalOverlay>
             <div className={styles.categories}>
                 { renderCategories }
             </div>
@@ -62,13 +71,14 @@ const BurgerIngredients = (props) => {
 }
 
 BurgerIngredients.propTypes = {
-    data: PropTypes.arrayOf(PropTypes.shape(propTypes.order)),
-    order: PropTypes.arrayOf(PropTypes.shape(propTypes.data)),
+    data: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient)),
+    order: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient)),
     categories: PropTypes.arrayOf(PropTypes.shape({
         name: PropTypes.string.isRequired,
         slug: PropTypes.string.isRequired
     })),
-    onClick: PropTypes.func.isRequired
+    onClick: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool
 }
 
 

@@ -3,15 +3,20 @@ import styles from './BurgerConstructor.module.css';
 import ContructorItem from '../ContructorItem/ContructorItem';
 import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import propTypes from '../../utils/propTypes.js';
+import ModalOverlay from '../ModalOverlay/ModalOverlay';
+import Modal from '../Modal/Modal';
+import OrderDetails from '../OrderDetails/OrderDetails';
 
 const BurgerConstructor = (props) => {
 
     const constructorRemoveClickHandler = useCallback((id) => {
         props.onRemove(id);
     }, [props.onClick])
+
+    const [modalIsVisible, setModalIsVisible] = useState(false);
 
     const renderContructorItems = useMemo(() => {
 
@@ -41,7 +46,7 @@ const BurgerConstructor = (props) => {
             text={data.name}
             price={data.price}
             thumbnail={data.image}
-            onClick={constructorRemoveClickHandler}
+            onRemove={constructorRemoveClickHandler}
         />
     }, [props.order, constructorRemoveClickHandler])
 
@@ -55,9 +60,17 @@ const BurgerConstructor = (props) => {
             text={data.name}
             price={data.price}
             thumbnail={data.image}
-            onClick={constructorRemoveClickHandler}
+            onRemove={constructorRemoveClickHandler}
         />
     }, [props.order, constructorRemoveClickHandler])
+
+    const completeOrderClickHandler = () => {
+        setModalIsVisible(true);
+    }
+
+    const closeModalHandler = () => {
+        setModalIsVisible(false);
+    }
 
     return(
         <section className={`${styles.section} pt-25`}>
@@ -73,16 +86,21 @@ const BurgerConstructor = (props) => {
                     <p className="text text_type_digits-medium">610</p>
                     <CurrencyIcon type="primary" />
                 </div>
-                <Button type="primary" size="large">
+                <Button type="primary" size="large" onClick={completeOrderClickHandler}>
                     Оформить заказ
                 </Button>
             </div>
+            <ModalOverlay visible={modalIsVisible} heading='' onClose={closeModalHandler}>
+                <Modal>
+                    <OrderDetails />
+                </Modal>
+            </ModalOverlay>
         </section>
     )
 }
 
 BurgerConstructor.propTypes = {
-    order: PropTypes.arrayOf(PropTypes.shape(propTypes.order))
+    order: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient))
 }
 
 export default BurgerConstructor;

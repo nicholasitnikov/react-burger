@@ -35,6 +35,6 @@ const Ingredient = (props) => {
 
 }
 
-Ingredient.propTypes = propTypes.order;
+Ingredient.propTypes = propTypes.ingredient;
 
 export default Ingredient;
