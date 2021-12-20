@@ -41,8 +41,8 @@ const IngredientsCategory = (props) => {
 IngredientsCategory.propTypes = {
     heading: PropTypes.string.isRequired,
     slug: PropTypes.string.isRequired,
-    data: PropTypes.arrayOf(PropTypes.shape(propTypes.order)),
-    order: PropTypes.arrayOf(PropTypes.shape(propTypes.data)),
+    data: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient)),
+    order: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient)),
     onClick: PropTypes.func.isRequired,
     onTypeInView: PropTypes.func.isRequired,
     setCategoryRef: PropTypes.func.isRequired
