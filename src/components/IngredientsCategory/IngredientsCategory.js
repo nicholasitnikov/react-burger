@@ -17,14 +17,14 @@ const IngredientsCategory = (props) => {
     }, [])
 
     const renderIngredients = useMemo(() => {
-        return props.data.map((item, index) => {
-            return <Ingredient 
+        return props.data.map(item => {
+            return (<Ingredient 
                 onTypeInView={props.onTypeInView}
                 {...item} 
-                key={index} 
+                key={item._id} 
                 onClick={ingredientClickHandler} 
                 count={ props.order.filter(el => el._id === item._id).length }
-            />
+            />)
         })
     }, [props, ingredientClickHandler])
     
@@ -41,8 +41,8 @@ const IngredientsCategory = (props) => {
 IngredientsCategory.propTypes = {
     heading: PropTypes.string.isRequired,
     slug: PropTypes.string.isRequired,
-    data: PropTypes.arrayOf(PropTypes.shape(propTypes.order)),
-    order: PropTypes.arrayOf(PropTypes.shape(propTypes.data)),
+    data: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient)),
+    order: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient)),
     onClick: PropTypes.func.isRequired,
     onTypeInView: PropTypes.func.isRequired,
     setCategoryRef: PropTypes.func.isRequired
