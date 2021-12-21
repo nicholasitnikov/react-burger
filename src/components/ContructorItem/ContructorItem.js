@@ -33,11 +33,11 @@ const ContructorItem = (props) => {
 
 ContructorItem.propTypes = {
     lock: PropTypes.bool.isRequired,
-    type: PropTypes.any.isRequired,
+    type: PropTypes.any,
     text: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     thumbnail: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired
+    onRemove: PropTypes.func.isRequired
 }
 
 export default ContructorItem;

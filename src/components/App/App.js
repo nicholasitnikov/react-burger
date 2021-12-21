@@ -1,17 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import styles from './App.module.css';
-import data from '../../utils/data';
-import { useState, useCallback } from 'react';
+import CONSTANTS from '../../utils/constants';
 
 const App = () => {
 
-  const [order, setOrder] = useState([
-    {...data.filter((el) => { return el.type === 'bun'; })[0], count: 1},
-    {...data.filter((el) => { return el.type === 'bun'; })[0], count: 1}
-  ]);
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [order, setOrder] = useState([]);
+
+  useEffect(() => {
+    fetch(`${CONSTANTS.API_URL}/ingredients`, {
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      } 
+    })
+    .then(res => { 
+      if (res.ok) {
+          return res.json();
+      }
+      return Promise.reject(`Ошибка ${res.status}`);
+     })
+    .then(res => {
+      setData(res.data);
+      
+    }).catch(err => {
+      console.log('Ошибка загрузки данных: ', err);
+    }).finally(() => {
+      setIsLoading(false);
+    })
+  }, [])
+
+  useEffect(() => {
+    setOrder([
+      data.filter((el) => { return el.type === 'bun'; })[0],
+      data.filter((el) => { return el.type === 'bun'; })[0]
+    ])
+  }, [data])
 
   const ingredientClickHandler = useCallback((id) => {
 
@@ -36,7 +63,7 @@ const App = () => {
       prevOrder.push(dataItem);
       prevOrder.push(prevOrder[0]);
     }
-
+    
     setOrder(prevOrder)
   
   }, [order])
@@ -50,8 +77,13 @@ const App = () => {
     <>
       <AppHeader />
       <main className={styles.main}>
-        <BurgerIngredients data={data} order={order} onClick={ingredientClickHandler} />
-        <BurgerConstructor order={order} onRemove={constructorRemoveClickHandler} />
+        { isLoading ? <p className="text text_type_main-default text_color_inactive pt-5">Загрузка данных...</p> : 
+          (<>
+            <BurgerIngredients data={data} order={order} onClick={ingredientClickHandler} />
+            <BurgerConstructor order={order} onRemove={constructorRemoveClickHandler} />
+          </>)
+        }
+        
       </main>
     </>
   );

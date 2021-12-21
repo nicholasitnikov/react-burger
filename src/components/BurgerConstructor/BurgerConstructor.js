@@ -3,9 +3,12 @@ import styles from './BurgerConstructor.module.css';
 import ContructorItem from '../ContructorItem/ContructorItem';
 import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import propTypes from '../../utils/propTypes.js';
+import ModalOverlay from '../ModalOverlay/ModalOverlay';
+import Modal from '../Modal/Modal';
+import OrderDetails from '../OrderDetails/OrderDetails';
 
 const BurgerConstructor = (props) => {
 
@@ -13,11 +16,21 @@ const BurgerConstructor = (props) => {
         props.onRemove(id);
     }, [props.onClick])
 
+    const [modalIsHidden, setModalIsHidden] = useState(true);
+
+    const openModal = () => {
+        setModalIsHidden(false);
+    }
+
+    const closeModal = () => {
+        setModalIsHidden(true);
+    }
+
     const renderContructorItems = useMemo(() => {
 
         return props.order.filter(el => el.type !== 'bun').map((el, index) => {
 
-            return <ContructorItem 
+            return (<ContructorItem 
                 id={index}
                 key={index}
                 lock={el.type === 'bun' && true}
@@ -25,7 +38,7 @@ const BurgerConstructor = (props) => {
                 price={el.price}
                 thumbnail={el.image}
                 onRemove={constructorRemoveClickHandler}
-            />
+            />)
         
         })
 
@@ -33,7 +46,7 @@ const BurgerConstructor = (props) => {
 
     const renderTopBun = useMemo(() => {
         const data = props.order[0]
-        return <ContructorItem 
+        return (<ContructorItem 
             id={data._id}
             key={0}
             lock={true} 
@@ -41,13 +54,13 @@ const BurgerConstructor = (props) => {
             text={data.name}
             price={data.price}
             thumbnail={data.image}
-            onClick={constructorRemoveClickHandler}
-        />
+            onRemove={constructorRemoveClickHandler}
+        />)
     }, [props.order, constructorRemoveClickHandler])
 
     const renderBottomBun = useMemo(() => {
         const data = props.order[props.order.length - 1];
-        return <ContructorItem 
+        return (<ContructorItem 
             id={data._id}
             key={props.order.length - 1}
             lock={true} 
@@ -55,8 +68,8 @@ const BurgerConstructor = (props) => {
             text={data.name}
             price={data.price}
             thumbnail={data.image}
-            onClick={constructorRemoveClickHandler}
-        />
+            onRemove={constructorRemoveClickHandler}
+        />)
     }, [props.order, constructorRemoveClickHandler])
 
     return(
@@ -73,16 +86,21 @@ const BurgerConstructor = (props) => {
                     <p className="text text_type_digits-medium">610</p>
                     <CurrencyIcon type="primary" />
                 </div>
-                <Button type="primary" size="large">
+                <Button type="primary" size="large" onClick={openModal}>
                     Оформить заказ
                 </Button>
             </div>
+            <Modal onClose={closeModal} hidden={modalIsHidden}>
+                <OrderDetails />
+            </Modal>
         </section>
     )
 }
 
 BurgerConstructor.propTypes = {
-    order: PropTypes.arrayOf(PropTypes.shape(propTypes.order))
+    order: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient)),
+    onRemove: PropTypes.func,
+    onClick: PropTypes.func
 }
 
 export default BurgerConstructor;
