@@ -17,14 +17,21 @@ const App = () => {
         'Access-Control-Allow-Origin': '*'
       } 
     })
-    .then(res => { if(res.ok) { return res.json() } })
+    .then(res => { 
+      if (res.ok) {
+          return res.json();
+      }
+      return Promise.reject(`Ошибка ${res.status}`);
+     })
     .then(res => {
       setData(res.data);
-      setIsLoading(false);
+      
     }).catch(err => {
       console.log('Ошибка загрузки данных: ', err);
+    }).finally(() => {
+      setIsLoading(false);
     })
-  })
+  }, [])
 
   useEffect(() => {
     setOrder([
