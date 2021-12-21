@@ -61,7 +61,7 @@ const BurgerIngredients = (props) => {
             return element;
         })
 
-    }, [props, ingredientClickHandler, selectedIngredient])
+    }, [props.order, props.data, ingredientClickHandler, selectedIngredient])
 
     return(
         <section className={`${styles.section} mr-10`}>
@@ -84,8 +84,7 @@ BurgerIngredients.propTypes = {
         name: PropTypes.string.isRequired,
         slug: PropTypes.string.isRequired
     })),
-    onClick: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool
+    onClick: PropTypes.func.isRequired
 }
 
 

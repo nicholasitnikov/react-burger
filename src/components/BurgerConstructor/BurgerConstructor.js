@@ -98,7 +98,9 @@ const BurgerConstructor = (props) => {
 }
 
 BurgerConstructor.propTypes = {
-    order: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient))
+    order: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient)),
+    onRemove: PropTypes.func,
+    onClick: PropTypes.func
 }
 
 export default BurgerConstructor;

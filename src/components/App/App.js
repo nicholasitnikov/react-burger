@@ -3,39 +3,35 @@ import AppHeader from '../AppHeader/AppHeader';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import styles from './App.module.css';
-import data from '../../utils/data';
 import CONSTANTS from '../../utils/constants';
 
 const App = () => {
 
-  // const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [order, setOrder] = useState([
-    data.filter((el) => { return el.type === 'bun'; })[0],
-    data.filter((el) => { return el.type === 'bun'; })[0]
-  ]);
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [order, setOrder] = useState([]);
 
-  // useEffect(() => {
-  //   fetch(`${CONSTANTS.API_URL}/ingredients`, {
-  //     headers: {
-  //       'Access-Control-Allow-Origin': '*'
-  //     } 
-  //   })
-  //   .then(res => { if(res.ok) { return res.json() } })
-  //   .then(res => {
-  //     setData(res.data);
-  //     setIsLoading(false);
-  //   }).catch(err => {
-  //     console.log('Ошибка загрузки данных: ', err);
-  //   })
-  // })
+  useEffect(() => {
+    fetch(`${CONSTANTS.API_URL}/ingredients`, {
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      } 
+    })
+    .then(res => { if(res.ok) { return res.json() } })
+    .then(res => {
+      setData(res.data);
+      setIsLoading(false);
+    }).catch(err => {
+      console.log('Ошибка загрузки данных: ', err);
+    })
+  })
 
-  // useEffect(() => {
-  //   setOrder([
-  //     data.filter((el) => { return el.type === 'bun'; })[0],
-  //     data.filter((el) => { return el.type === 'bun'; })[0]
-  //   ])
-  // }, [data])
+  useEffect(() => {
+    setOrder([
+      data.filter((el) => { return el.type === 'bun'; })[0],
+      data.filter((el) => { return el.type === 'bun'; })[0]
+    ])
+  }, [data])
 
   const ingredientClickHandler = useCallback((id) => {
 
