@@ -8,7 +8,8 @@ const OrderDetails = () => {
 
     const { fetchedOrder } = useContext(ContructorContext);
 
-    console.log(fetchedOrder)
+
+    if(!fetchedOrder) { return null; }
 
     return(
         <>  
