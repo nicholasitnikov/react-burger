@@ -2,21 +2,22 @@
 import styles from './BurgerConstructor.module.css';
 import ContructorItem from '../ContructorItem/ContructorItem';
 import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import PropTypes from 'prop-types';
-import { useCallback, useMemo, useState } from 'react';
-
-import propTypes from '../../utils/propTypes.js';
-import ModalOverlay from '../ModalOverlay/ModalOverlay';
+import { useMemo, useState, useContext, useEffect } from 'react';
 import Modal from '../Modal/Modal';
 import OrderDetails from '../OrderDetails/OrderDetails';
+import ContructorContext from '../../contexts/ContructorContext';
 
-const BurgerConstructor = (props) => {
-
-    const constructorRemoveClickHandler = useCallback((id) => {
-        props.onRemove(id);
-    }, [props.onClick])
+const BurgerConstructor = () => {
 
     const [modalIsHidden, setModalIsHidden] = useState(true);
+
+    const { order, sendOrder, fetchedOrder } = useContext(ContructorContext);
+
+    useEffect(() => {
+        if(fetchedOrder) {
+            setModalIsHidden(false);
+        }
+    }, [fetchedOrder])
 
     const openModal = () => {
         setModalIsHidden(false);
@@ -26,51 +27,53 @@ const BurgerConstructor = (props) => {
         setModalIsHidden(true);
     }
 
+    const calculateTotal = useMemo(() => {
+        return order.reduce((res, current) => {
+            return res += (current.type === 'bun' ? current.price * 2 : current.price);
+        }, 0)
+    }, [order]);
+
     const renderContructorItems = useMemo(() => {
 
-        return props.order.filter(el => el.type !== 'bun').map((el, index) => {
-
+        return order.filter(el => el.type !== 'bun').map((el, index) => {
             return (<ContructorItem 
-                id={index}
+                id={el._id}
                 key={index}
                 lock={el.type === 'bun' && true}
                 text={el.name}
                 price={el.price}
                 thumbnail={el.image}
-                onRemove={constructorRemoveClickHandler}
             />)
         
         })
 
-    }, [props.order, constructorRemoveClickHandler])
+    }, [order])
 
     const renderTopBun = useMemo(() => {
-        const data = props.order[0]
+        const data = order[0]
         return (<ContructorItem 
             id={data._id}
-            key={0}
+            key={'top_ban'}
             lock={true} 
             type={'top'}
             text={data.name}
             price={data.price}
             thumbnail={data.image}
-            onRemove={constructorRemoveClickHandler}
         />)
-    }, [props.order, constructorRemoveClickHandler])
+    }, [order])
 
     const renderBottomBun = useMemo(() => {
-        const data = props.order[props.order.length - 1];
+        const data = order[0];
         return (<ContructorItem 
             id={data._id}
-            key={props.order.length - 1}
+            key={'bottom_ban'}
             lock={true} 
             type={'bottom'}
             text={data.name}
             price={data.price}
             thumbnail={data.image}
-            onRemove={constructorRemoveClickHandler}
         />)
-    }, [props.order, constructorRemoveClickHandler])
+    }, [order])
 
     return(
         <section className={`${styles.section} pt-25`}>
@@ -83,10 +86,10 @@ const BurgerConstructor = (props) => {
             </div>
             <div className={`${styles.total} pt-10 pb-10`}>
                 <div className={styles.price}>
-                    <p className="text text_type_digits-medium">610</p>
+                    <p className="text text_type_digits-medium">{calculateTotal}</p>
                     <CurrencyIcon type="primary" />
                 </div>
-                <Button type="primary" size="large" onClick={openModal}>
+                <Button type="primary" size="large" onClick={sendOrder}>
                     Оформить заказ
                 </Button>
             </div>
@@ -95,12 +98,6 @@ const BurgerConstructor = (props) => {
             </Modal>
         </section>
     )
-}
-
-BurgerConstructor.propTypes = {
-    order: PropTypes.arrayOf(PropTypes.shape(propTypes.ingredient)),
-    onRemove: PropTypes.func,
-    onClick: PropTypes.func
 }
 
 export default BurgerConstructor;

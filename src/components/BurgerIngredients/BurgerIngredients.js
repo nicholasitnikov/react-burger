@@ -31,7 +31,7 @@ const BurgerIngredients = (props) => {
 
     const ingredientClickHandler = useCallback((id) => {
         setSelectedIngredient(id);
-        openModal();
+        // openModal();
         props.onClick(id);
     }, [props.onClick, selectedIngredient])
 

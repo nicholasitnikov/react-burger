@@ -1,13 +1,12 @@
 import styles from './ContructorItem.module.css'
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import PropTypes from 'prop-types';
-import { useMemo } from 'react';
+import { useMemo, useContext } from 'react';
+import ContructorContext from '../../contexts/ContructorContext';
 
 const ContructorItem = (props) => {
 
-    const handleRemoveItem = () => {
-        props.onRemove(props.id);
-    }
+    const { constructorRemoveClickHandler } = useContext(ContructorContext);
 
     const getPostfix = useMemo(() => {
         if(props.type === 'top') { return '(верх)' }
@@ -25,19 +24,19 @@ const ContructorItem = (props) => {
                 type={props.type}
                 isLocked={props.lock}
                 thumbnail={props.thumbnail}
-                handleClose={handleRemoveItem}
+                handleClose={() => constructorRemoveClickHandler(props.id)}
             />
         </article>
     )
 }
 
 ContructorItem.propTypes = {
+    id: PropTypes.string,
     lock: PropTypes.bool.isRequired,
     type: PropTypes.any,
     text: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
-    thumbnail: PropTypes.string.isRequired,
-    onRemove: PropTypes.func.isRequired
+    thumbnail: PropTypes.string.isRequired
 }
 
 export default ContructorItem;

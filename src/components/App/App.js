@@ -4,27 +4,20 @@ import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import styles from './App.module.css';
 import CONSTANTS from '../../utils/constants';
+import axios from 'axios';
+import ContructorContext from '../../contexts/ContructorContext';
 
 const App = () => {
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [order, setOrder] = useState([]);
+  const [fetchedOrder, setFetchedOrder] = useState(null);
 
   useEffect(() => {
-    fetch(`${CONSTANTS.API_URL}/ingredients`, {
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      } 
-    })
-    .then(res => { 
-      if (res.ok) {
-          return res.json();
-      }
-      return Promise.reject(`Ошибка ${res.status}`);
-     })
+    axios.get(`${CONSTANTS.API_URL}/ingredients`)
     .then(res => {
-      setData(res.data);
+      setData(res.data.data);
       
     }).catch(err => {
       console.log('Ошибка загрузки данных: ', err);
@@ -35,7 +28,6 @@ const App = () => {
 
   useEffect(() => {
     setOrder([
-      data.filter((el) => { return el.type === 'bun'; })[0],
       data.filter((el) => { return el.type === 'bun'; })[0]
     ])
   }, [data])
@@ -59,9 +51,7 @@ const App = () => {
     })
 
     if(!isInOrder) {
-      prevOrder.pop()
       prevOrder.push(dataItem);
-      prevOrder.push(prevOrder[0]);
     }
     
     setOrder(prevOrder)
@@ -69,9 +59,25 @@ const App = () => {
   }, [order])
 
   const constructorRemoveClickHandler = useCallback((id) => {
+    console.log(id)
     const prevOrder = [...order].filter(el => el._id !== id);
     setOrder(prevOrder)
   }, [order])
+
+  const prepereOrderToSend = () => {
+    return order.map(el => el._id).concat([order[0]._id]);
+  }
+
+  const sendOrder = async () => {
+    const response = await axios.post('https://norma.nomoreparties.space/api/orders', {
+      "ingredients": prepereOrderToSend()
+    }).catch(err => console.log(err));
+    
+    if(response.data.success) {
+      setFetchedOrder(response.data)
+    }
+
+  }
 
   return (
     <>
@@ -80,7 +86,9 @@ const App = () => {
         { isLoading ? <p className="text text_type_main-default text_color_inactive pt-5">Загрузка данных...</p> : 
           (<>
             <BurgerIngredients data={data} order={order} onClick={ingredientClickHandler} />
-            <BurgerConstructor order={order} onRemove={constructorRemoveClickHandler} />
+            <ContructorContext.Provider value={{order, constructorRemoveClickHandler, sendOrder, fetchedOrder}}>
+              <BurgerConstructor />
+            </ContructorContext.Provider>
           </>)
         }
         
