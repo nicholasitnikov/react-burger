@@ -5,8 +5,20 @@
     padding: 0 8px 0 16px;
     box-sizing: border-box;
     cursor: pointer;
+    position: relative;
 }
 
 .right {
     align-self: flex-end;
 } 
+
+.itemOnDrag::after {
+    width: 80%;
+    left: 12%;
+    height: 2px;
+    background: #8585AD;
+    opacity: .6;
+    content: '';
+    position: absolute;
+    bottom: -6px;
+}

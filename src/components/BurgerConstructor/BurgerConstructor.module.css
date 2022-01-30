@@ -6,6 +6,10 @@
     overflow: hidden;
 }
 
+.sectionOnDrag {
+    opacity: .7;
+}
+
 .items {
     display: flex;
     flex-direction: column;

@@ -3,18 +3,28 @@ import styles from './Modal.module.css';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Modal = (props) => {
 
+    const [closed, setClosed] = useState(true);
+
+    useEffect(() => {
+
+        setClosed(props.closed);
+
+    }, [props.closed]);
+
     const closeClickHandler = () => {
+        setClosed(true);
         props.onClose();
-    }
+    };
 
     const escKeyHandler = (e) => {
         if(e.code === 'Escape') {
             e.preventDefault();
             props.onClose();
+            setClosed(true);
         }
     }
 
@@ -27,7 +37,7 @@ const Modal = (props) => {
 
     const modalTarget = document.querySelector('#modals');
     
-    return ReactDOM.createPortal(<ModalOverlay onClose={closeClickHandler} hidden={props.hidden}>
+    return closed ? null : ReactDOM.createPortal(<ModalOverlay onClose={closeClickHandler} hidden={props.hidden}>
         <div className={styles.modal}>
             <div className={styles.info}>
             <h2 className="text text_type_main-large">{props.heading}</h2>
@@ -41,9 +51,9 @@ const Modal = (props) => {
 }
 
 Modal.propTypes = {
+    onClose: PropTypes.func,
     heading: PropTypes.string,
-    onClose: PropTypes.func.isRequired,
-    hidden: PropTypes.bool.isRequired
+    closed: PropTypes.bool
 }
 
 export default Modal;
