@@ -6,11 +6,15 @@ import combineRefs from 'react-combine-refs';
 import { useDrag, useDrop } from 'react-dnd';
 
 import { useDispatch } from 'react-redux';
-import { MOVE_CONSTRUCTOR_ITEM } from '../../services/actions';
+import { DELETE_CONSTRUCTOR_ITEM, MOVE_CONSTRUCTOR_ITEM } from '../../services/actions';
 
 const ContructorItem = (props) => {
 
     const dispatch = useDispatch();
+
+    const handleItemRemove = () => {
+        dispatch({ type: DELETE_CONSTRUCTOR_ITEM, key: props.dataKey });
+    }
 
     const getPostfix = useMemo(() => {
         if(props.position === 'top') { return '(верх)' }
@@ -19,9 +23,11 @@ const ContructorItem = (props) => {
     }, [props.type])
 
     const [{isDragOver}, dropTarget] = useDrop({
-        accept: props.position ? 'null' : 'contructorItem',
+        accept: 'contructorItem',
         drop(item) {
-            dispatch({ type: MOVE_CONSTRUCTOR_ITEM, id: item.id, itemType: item.type, targetId: props.id })
+            if(item.type !== 'bun') {
+                dispatch({ type: MOVE_CONSTRUCTOR_ITEM, id: item.id, itemType: item.type, targetId: props.id })
+            }
         },
         collect: monitor => ({
             isDragOver: monitor.isOver(),
@@ -40,10 +46,10 @@ const ContructorItem = (props) => {
             <ConstructorElement
                 text={`${props.text}\n${getPostfix}`}
                 price={props.price}
-                type={props.type}
+                type={props.position}
                 isLocked={props.lock}
                 thumbnail={props.thumbnail}
-                handleClose={() => () => (props.id)}
+                handleClose={handleItemRemove}
             />
         </article>
     )

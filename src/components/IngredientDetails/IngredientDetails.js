@@ -30,13 +30,4 @@ const IngredientDetails = () => {
     </> : null)
 }
 
-IngredientDetails.propTypes = {
-    name: PropTypes.string,
-    image_large: PropTypes.string,
-    calories: PropTypes.number,
-    proteins: PropTypes.number,
-    fat: PropTypes.number,
-    carbohydrates: PropTypes.number,
-}
-
 export default IngredientDetails;

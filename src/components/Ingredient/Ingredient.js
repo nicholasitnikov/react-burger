@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import propTypes from '../../utils/propTypes';
 import { useDispatch } from 'react-redux';
-import { ADD_CONSTRUCTOR_ITEM } from '../../services/actions';
+import { ADD_CONSTRUCTOR_ITEM, SET_CURRENT_INGREDIENT } from '../../services/actions';
 import { useDrag } from 'react-dnd';
 import combineRefs from 'react-combine-refs';
 
@@ -19,7 +19,7 @@ const Ingredient = (props) => {
     const dispatch = useDispatch();
 
     const clickHandler = () => {
-        dispatch({ type: ADD_CONSTRUCTOR_ITEM, id: props._id, itemType: props.type })
+        dispatch({ type: SET_CURRENT_INGREDIENT, id: props._id })
     }
 
     const { ref, inView } = useInView({

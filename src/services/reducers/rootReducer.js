@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { v4 as uuidv4 } from 'uuid';
 
 import { 
     INGREDIENTS_REQUEST_IN_PROGRESS,
@@ -10,7 +11,10 @@ import {
     ORDER_REQUEST_SUCCESS,
     ORDER_REQUEST_IN_PROGRESS,
     CLEAN_ORDER,
-    MOVE_CONSTRUCTOR_ITEM
+    MOVE_CONSTRUCTOR_ITEM,
+    DELETE_CONSTRUCTOR_ITEM,
+    SET_CURRENT_INGREDIENT,
+    CLEAN_CONTRUCTOR
  } from '../actions/';
 
 const initialState = {
@@ -23,20 +27,20 @@ const initialState = {
         failed: false
     },
     orderRequest: {
-        loading: true,
+        loading: false,
         failed: false
     },
 }
 
 function moveContructorItem(targetArray, old_index, new_index) {
     if (new_index >= targetArray.length) {
-        var k = new_index - targetArray.length + 1;
+        let k = new_index - targetArray.length + 1;
         while (k--) {
             targetArray.push(undefined);
         }
     }
     targetArray.splice(new_index, 0, targetArray.splice(old_index, 1)[0]);
-    return targetArray; // for testing
+    return targetArray;
 };
 
 const burgerReducer = (state = initialState, action) => {
@@ -60,10 +64,6 @@ const burgerReducer = (state = initialState, action) => {
                 ingredients: [
                     ...state.ingredients,
                     ...action.data
-                ],
-                constructorItems: [
-                    ...state.constructorItems,
-                    ...[action.data.find(el => el.type === 'bun')]
                 ]
             }
         }
@@ -106,16 +106,21 @@ const burgerReducer = (state = initialState, action) => {
                 }
             }
         }
+        case SET_CURRENT_INGREDIENT: {
+            return {
+                ...state,
+                currentIngredient: state.ingredients.find(ingredient => ingredient._id === action.id),
+            }
+        }
         case ADD_CONSTRUCTOR_ITEM: {
 
             return {
                 ...state,
-                currentIngredient: state.ingredients.find(ingredient => ingredient._id === action.id),
-                constructorItems: action.itemType === 'bun' ? [...state.constructorItems.map(el => {
+                constructorItems: action.itemType === 'bun' && state.constructorItems.length > 0  ? [...state.constructorItems.map(el => {
                     return el.type === 'bun' ? state.ingredients.find(ingredient => ingredient._id === action.id) : el;
                 })] : [
                     ...state.constructorItems,
-                    ...[state.ingredients.find(el => el._id === action.id)]
+                    ...[{...state.ingredients.find(el => el._id === action.id), key: uuidv4()}]
                 ]
             }
         }
@@ -123,9 +128,6 @@ const burgerReducer = (state = initialState, action) => {
             const targetIndex = state.constructorItems.findIndex(el => el._id === action.targetId) + 1
             const elementIndex = state.constructorItems.findIndex(el => el._id === action.id) 
             let prevState = [...state.constructorItems];
-        
-
-            // return state;
             
             return {
                 ...state,
@@ -138,10 +140,22 @@ const burgerReducer = (state = initialState, action) => {
                 currentIngredient: null
             }
         }
+        case DELETE_CONSTRUCTOR_ITEM: {
+            return {
+                ...state,
+                constructorItems: state.constructorItems.filter(el => action.key !== el.key)
+            }
+        }
         case CLEAN_ORDER: {
             return {
                 ...state,
                 order: null
+            }
+        }
+        case CLEAN_CONTRUCTOR: {
+            return {
+                ...state,
+                constructorItems: []
             }
         }
         default: {

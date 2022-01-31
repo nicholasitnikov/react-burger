@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CLEAN_CURRENT_INGREDIENT } from '../../services/actions';
 
 
-const BurgerIngredients = (props) => {
+const BurgerIngredients = () => {
 
     const [currentType, setCurrentType] = useState(categories[0].slug);
     const categoriesRef = useRef({});
@@ -42,7 +42,6 @@ const BurgerIngredients = (props) => {
             const ref = categoriesRef.current[category.slug];
             const element = (<IngredientsCategory
                 setCategoryRef={setCategoryRef}
-                order={props.order} 
                 key={index}
                 onTypeInView={typeInViewHandler}
                 heading={category.name} 

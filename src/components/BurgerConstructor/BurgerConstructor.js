@@ -6,13 +6,14 @@ import { useMemo } from 'react';
 import Modal from '../Modal/Modal';
 import OrderDetails from '../OrderDetails/OrderDetails';
 import { useSelector, useDispatch } from 'react-redux';
-import { sendOrder } from '../../services/actions';
+import { CLEAN_CONTRUCTOR, sendOrder } from '../../services/actions';
 import { useDrop } from 'react-dnd';
 import { CLEAN_ORDER, ADD_CONSTRUCTOR_ITEM } from '../../services/actions';
+import { v4 as uuidv4 } from 'uuid';
 
 const BurgerConstructor = () => {
 
-    const { constructorItems, order } = useSelector(store => store.burger);
+    const { constructorItems, order, orderRequest } = useSelector(store => store.burger);
     const dispatch = useDispatch();
 
     const completeOrderHandler = () => {
@@ -21,12 +22,15 @@ const BurgerConstructor = () => {
 
     const closeModalHandler = () => {
         dispatch({ type: CLEAN_ORDER })
+        dispatch({ type: CLEAN_CONTRUCTOR })
     }
 
     const [{isDragOver}, dropTarget] = useDrop({
         accept: "ingredient",
         drop(item) {
-            dispatch({ type: ADD_CONSTRUCTOR_ITEM, id: item.id, itemType: item.type })
+            if(constructorItems.length > 0 || item.type === 'bun') {
+                dispatch({ type: ADD_CONSTRUCTOR_ITEM, id: item.id, itemType: item.type })
+            }
         },
         collect: monitor => ({
             isDragOver: monitor.isOver(),
@@ -44,7 +48,8 @@ const BurgerConstructor = () => {
         return constructorItems.filter(el => el.type !== 'bun').map((el, index) => {
             return (<ContructorItem 
                 id={el._id}
-                key={index}
+                key={el.key}
+                dataKey={el.key}
                 lock={el.type === 'bun' && true}
                 text={el.name}
                 price={el.price}
@@ -58,9 +63,10 @@ const BurgerConstructor = () => {
 
     const renderTopBun = useMemo(() => {
         const data = constructorItems[0]
+        if(!data) { return null; }
         return (<ContructorItem 
             id={data._id}
-            key={'top_ban'}
+            key={uuidv4()}
             lock={true} 
             position={'top'}
             text={data.name}
@@ -72,9 +78,10 @@ const BurgerConstructor = () => {
 
     const renderBottomBun = useMemo(() => {
         const data = constructorItems[0];
+        if(!data) { return null; }
         return (<ContructorItem 
             id={data._id}
-            key={'bottom_ban'}
+            key={uuidv4()}
             lock={true} 
             position={'bottom'}
             text={data.name}
@@ -93,13 +100,19 @@ const BurgerConstructor = () => {
                 </div>
                 { constructorItems.length > 0 && renderBottomBun }
             </div>
+            {   
+                constructorItems.length === 0 &&
+                <p className={`text text_type_main-default ${styles.emptyText}`}>
+                    Пожалуйста, перенесите сюда булку и&nbsp;ингредиенты для создания заказа
+                </p>
+            }
             <div className={`${styles.total} pt-10 pb-10`}>
                 <div className={styles.price}>
                     <p className="text text_type_digits-medium">{calculateTotal}</p>
                     <CurrencyIcon type="primary" />
                 </div>
-                <Button type="primary" size="large" onClick={completeOrderHandler}>
-                    Оформить заказ
+                <Button type="primary" size="large" onClick={completeOrderHandler} disabled={constructorItems.length === 0}>
+                    { orderRequest.loading ? 'Создание заказа' : 'Оформить заказ' }
                 </Button>
             </div>
             <Modal closed={order ===  null} onClose={closeModalHandler}>

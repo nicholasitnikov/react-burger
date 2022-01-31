@@ -6,6 +6,12 @@
     overflow: hidden;
 }
 
+.emptyText {
+    max-width: 400px;
+    align-self: flex-end;
+    text-align: right;
+}
+
 .sectionOnDrag {
     opacity: .7;
 }

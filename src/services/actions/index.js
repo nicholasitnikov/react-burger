@@ -14,8 +14,13 @@ export const CLEAN_CURRENT_INGREDIENT = 'CLEAN_CURRENT_INGREDIENT';
 export const CLEAN_ORDER = 'CLEAN_ORDER';
 
 export const ADD_CONSTRUCTOR_ITEM = 'ADD_CONSTRUCTOR_ITEM';
+export const DELETE_CONSTRUCTOR_ITEM = 'DELETE_CONSTRUCTOR_ITEM';
 
 export const MOVE_CONSTRUCTOR_ITEM = 'MOVE_CONSTRUCTOR_ITEM';
+
+export const SET_CURRENT_INGREDIENT = 'SET_CURRENT_INGREDIENT';
+
+export const CLEAN_CONTRUCTOR = 'CLEAN_CONTRUCTOR';
 
 export const sendOrder = () => (dispatch, getState) => {
 
@@ -24,7 +29,7 @@ export const sendOrder = () => (dispatch, getState) => {
 
     dispatch({ type: ORDER_REQUEST_IN_PROGRESS })
 
-    axios.post('https://norma.nomoreparties.space/api/orders', {
+    axios.post(`${CONSTANTS.API_URL}/orders`, {
       "ingredients": preparedData
     }).then((res) => {
         if(res.data.success) {
