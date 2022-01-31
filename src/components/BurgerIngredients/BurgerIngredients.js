@@ -2,9 +2,7 @@
 import IngredientsTabs from '../IngredientsTabs/IngredientsTabs';
 import styles from './BurgerIngredients.module.css';
 import IngredientsCategory from '../IngredientsCategory/IngredientsCategory';
-import PropTypes from 'prop-types';
 import { useMemo, useRef, useState } from 'react';
-import propTypes from '../../utils/propTypes'
 import categories from '../../utils/categories';
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';

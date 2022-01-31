@@ -66,7 +66,7 @@ const BurgerConstructor = () => {
         if(!data) { return null; }
         return (<ContructorItem 
             id={data._id}
-            key={uuidv4()}
+            key={data.key + '_top'}
             lock={true} 
             position={'top'}
             text={data.name}
@@ -81,7 +81,7 @@ const BurgerConstructor = () => {
         if(!data) { return null; }
         return (<ContructorItem 
             id={data._id}
-            key={uuidv4()}
+            key={data.key + '_bottom'}
             lock={true} 
             position={'bottom'}
             text={data.name}

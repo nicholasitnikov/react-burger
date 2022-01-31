@@ -13,12 +13,12 @@
 } 
 
 .itemOnDrag::after {
-    width: 80%;
-    left: 12%;
+    width: 100%;
+    left: 0%;
     height: 2px;
     background: #8585AD;
     opacity: .6;
     content: '';
     position: absolute;
-    bottom: -6px;
+    bottom: 0;
 }

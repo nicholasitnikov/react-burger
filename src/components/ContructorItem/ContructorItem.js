@@ -42,7 +42,6 @@ const ContructorItem = (props) => {
     return(
         <article className={`${styles.item} ${props.lock && styles.right} ${isDragOver && styles.itemOnDrag}`} ref={combineRefs(dragRef, dropTarget)}>
             { !props.lock && <DragIcon type="primary" /> }
-            
             <ConstructorElement
                 text={`${props.text}\n${getPostfix}`}
                 price={props.price}

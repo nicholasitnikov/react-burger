@@ -116,7 +116,8 @@ const burgerReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                constructorItems: action.itemType === 'bun' && state.constructorItems.length > 0  ? [...state.constructorItems.map(el => {
+                constructorItems: action.itemType === 'bun' && state.constructorItems.length > 0  ? 
+                [...state.constructorItems.map(el => {
                     return el.type === 'bun' ? state.ingredients.find(ingredient => ingredient._id === action.id) : el;
                 })] : [
                     ...state.constructorItems,
