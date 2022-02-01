@@ -1,57 +1,36 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import styles from './App.module.css';
-import data from '../../utils/data';
-import { useState, useCallback } from 'react';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { getIngredients } from '../../services/actions';
+
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const App = () => {
 
-  const [order, setOrder] = useState([
-    {...data.filter((el) => { return el.type === 'bun'; })[0], count: 1},
-    {...data.filter((el) => { return el.type === 'bun'; })[0], count: 1}
-  ]);
+  const disaptch = useDispatch();
 
-  const ingredientClickHandler = useCallback((id) => {
+  const { ingredientsRequest } = useSelector(store => store.burger);
 
-    const dataItem = data.find(el => el._id === id);
-    if(!dataItem) {
-      return;
-    }
-
-    let prevOrder = [...order];
-    let isInOrder = false;
-
-    prevOrder = prevOrder.map(el => {
-      if(dataItem.type === 'bun' && el.type === 'bun') {
-        isInOrder = true;
-        return dataItem;
-      }
-      return el;
-    })
-
-    if(!isInOrder) {
-      prevOrder.pop()
-      prevOrder.push(dataItem);
-      prevOrder.push(prevOrder[0]);
-    }
-
-    setOrder(prevOrder)
-  
-  }, [order])
-
-  const constructorRemoveClickHandler = useCallback((id) => {
-    const prevOrder = [...order].filter(el => el._id !== id);
-    setOrder(prevOrder)
-  }, [order])
+  useEffect(() => {
+    disaptch(getIngredients());
+  }, [])
 
   return (
     <>
       <AppHeader />
       <main className={styles.main}>
-        <BurgerIngredients data={data} order={order} onClick={ingredientClickHandler} />
-        <BurgerConstructor order={order} onRemove={constructorRemoveClickHandler} />
+        { ingredientsRequest.loading ? <p className="text text_type_main-default text_color_inactive pt-5">Загрузка данных...</p> : 
+          (<DndProvider backend={HTML5Backend}>
+            <BurgerIngredients />
+            <BurgerConstructor />
+          </DndProvider>)
+        }
+        
       </main>
     </>
   );

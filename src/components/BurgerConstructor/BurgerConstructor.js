@@ -2,87 +2,124 @@
 import styles from './BurgerConstructor.module.css';
 import ContructorItem from '../ContructorItem/ContructorItem';
 import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import PropTypes from 'prop-types';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
+import Modal from '../Modal/Modal';
+import OrderDetails from '../OrderDetails/OrderDetails';
+import { useSelector, useDispatch } from 'react-redux';
+import { CLEAN_CONTRUCTOR, generateContructorItem, sendOrder } from '../../services/actions';
+import { useDrop } from 'react-dnd';
+import { CLEAN_ORDER, ADD_CONSTRUCTOR_ITEM } from '../../services/actions';
+import { v4 as uuidv4 } from 'uuid';
 
-import propTypes from '../../utils/propTypes.js';
+const BurgerConstructor = () => {
 
-const BurgerConstructor = (props) => {
+    const { constructorItems, order, orderRequest } = useSelector(store => store.burger);
+    const dispatch = useDispatch();
 
-    const constructorRemoveClickHandler = useCallback((id) => {
-        props.onRemove(id);
-    }, [props.onClick])
+    const completeOrderHandler = () => {
+        dispatch(sendOrder());
+    }
+
+    const closeModalHandler = () => {
+        dispatch({ type: CLEAN_ORDER })
+        dispatch({ type: CLEAN_CONTRUCTOR })
+    }
+
+    const [{isDragOver}, dropTarget] = useDrop({
+        accept: "ingredient",
+        drop(item) {
+            if(constructorItems.length > 0 || item.type === 'bun') {
+                dispatch(generateContructorItem(item));
+            }
+        },
+        collect: monitor => ({
+            isDragOver: monitor.isOver(),
+        })
+    });
+
+    const calculateTotal = useMemo(() => {
+        return constructorItems.reduce((res, current) => {
+            return res += (current.type === 'bun' ? current.price * 2 : current.price);
+        }, 0)
+    }, [constructorItems]);
 
     const renderContructorItems = useMemo(() => {
 
-        return props.order.filter(el => el.type !== 'bun').map((el, index) => {
-
-            return <ContructorItem 
-                id={index}
-                key={index}
+        return constructorItems.filter(el => el.type !== 'bun').map((el, index) => {
+            return (<ContructorItem 
+                id={el._id}
+                key={el.key}
+                dataKey={el.key}
                 lock={el.type === 'bun' && true}
                 text={el.name}
                 price={el.price}
                 thumbnail={el.image}
-                onRemove={constructorRemoveClickHandler}
-            />
+                type={el.type}
+            />)
         
         })
 
-    }, [props.order, constructorRemoveClickHandler])
+    }, [constructorItems])
 
     const renderTopBun = useMemo(() => {
-        const data = props.order[0]
-        return <ContructorItem 
+        const data = constructorItems[0]
+        if(!data) { return null; }
+        return (<ContructorItem 
             id={data._id}
-            key={0}
+            key={data.key + '_top'}
             lock={true} 
-            type={'top'}
+            position={'top'}
             text={data.name}
             price={data.price}
             thumbnail={data.image}
-            onClick={constructorRemoveClickHandler}
-        />
-    }, [props.order, constructorRemoveClickHandler])
+            type={data.type}
+        />)
+    }, [constructorItems])
 
     const renderBottomBun = useMemo(() => {
-        const data = props.order[props.order.length - 1];
-        return <ContructorItem 
+        const data = constructorItems[0];
+        if(!data) { return null; }
+        return (<ContructorItem 
             id={data._id}
-            key={props.order.length - 1}
+            key={data.key + '_bottom'}
             lock={true} 
-            type={'bottom'}
+            position={'bottom'}
             text={data.name}
             price={data.price}
             thumbnail={data.image}
-            onClick={constructorRemoveClickHandler}
-        />
-    }, [props.order, constructorRemoveClickHandler])
+            type={data.type}
+        />)
+    }, [constructorItems])
 
     return(
-        <section className={`${styles.section} pt-25`}>
+        <section className={`${styles.section} pt-25 ${isDragOver && styles.sectionOnDrag}`} ref={dropTarget}>
             <div className={styles.items}>
-                { renderTopBun }
+                { constructorItems.length > 0 && renderTopBun }
                 <div className={styles.ingredients}>
                     { renderContructorItems }
                 </div>
-                { renderBottomBun }
+                { constructorItems.length > 0 && renderBottomBun }
             </div>
+            {   
+                constructorItems.length === 0 &&
+                <p className={`text text_type_main-default ${styles.emptyText}`}>
+                    Пожалуйста, перенесите сюда булку и&nbsp;ингредиенты для создания заказа
+                </p>
+            }
             <div className={`${styles.total} pt-10 pb-10`}>
                 <div className={styles.price}>
-                    <p className="text text_type_digits-medium">610</p>
+                    <p className="text text_type_digits-medium">{calculateTotal}</p>
                     <CurrencyIcon type="primary" />
                 </div>
-                <Button type="primary" size="large">
-                    Оформить заказ
+                <Button type="primary" size="large" onClick={completeOrderHandler} disabled={constructorItems.length === 0}>
+                    { orderRequest.loading ? 'Создание заказа' : 'Оформить заказ' }
                 </Button>
             </div>
+            <Modal closed={order ===  null} onClose={closeModalHandler}>
+                <OrderDetails />
+            </Modal>
         </section>
     )
-}
-
-BurgerConstructor.propTypes = {
-    order: PropTypes.arrayOf(PropTypes.shape(propTypes.order))
 }
 
 export default BurgerConstructor;

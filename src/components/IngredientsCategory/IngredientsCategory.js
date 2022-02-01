@@ -1,14 +1,12 @@
 import Ingredient from "../Ingredient/Ingredient";
 import styles from './IngredientsCategory.module.css';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import propTypes from '../../utils/propTypes';
+import { useEffect, useMemo, useRef } from 'react';
+import { useSelector } from "react-redux";
 
 const IngredientsCategory = (props) => {
-    
-    const ingredientClickHandler = useCallback((id) => {
-        props.onClick(id);
-    }, [props.onClick])
+
+    const { ingredients, constructorItems } = useSelector(store => store.burger);
 
     const ref = useRef();
 
@@ -16,17 +14,21 @@ const IngredientsCategory = (props) => {
         props.setCategoryRef(props.slug, ref.current);
     }, [])
 
+    const prepareData = useMemo(() => {
+        return ingredients.filter(el => el.type === props.slug)
+    }, [props.slug, ingredients])
+
     const renderIngredients = useMemo(() => {
-        return props.data.map((item, index) => {
-            return <Ingredient 
+
+        return prepareData.map(item => {
+            return (<Ingredient 
                 onTypeInView={props.onTypeInView}
                 {...item} 
-                key={index} 
-                onClick={ingredientClickHandler} 
-                count={ props.order.filter(el => el._id === item._id).length }
-            />
+                key={item._id}
+                count={ constructorItems.filter(el => el._id === item._id).length }
+            />)
         })
-    }, [props, ingredientClickHandler])
+    }, [props, prepareData, constructorItems])
     
     return(
         <div ref={ref}>
@@ -41,9 +43,6 @@ const IngredientsCategory = (props) => {
 IngredientsCategory.propTypes = {
     heading: PropTypes.string.isRequired,
     slug: PropTypes.string.isRequired,
-    data: PropTypes.arrayOf(PropTypes.shape(propTypes.order)),
-    order: PropTypes.arrayOf(PropTypes.shape(propTypes.data)),
-    onClick: PropTypes.func.isRequired,
     onTypeInView: PropTypes.func.isRequired,
     setCategoryRef: PropTypes.func.isRequired
 }

@@ -4,11 +4,22 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import propTypes from '../../utils/propTypes';
+import { useDispatch } from 'react-redux';
+import { ADD_CONSTRUCTOR_ITEM, SET_CURRENT_INGREDIENT } from '../../services/actions';
+import { useDrag } from 'react-dnd';
+import combineRefs from 'react-combine-refs';
 
 const Ingredient = (props) => {
 
+    const [, dragRef] = useDrag({
+        type: "ingredient",
+        item: {id: props._id, type: props.type}
+    });
+
+    const dispatch = useDispatch();
+
     const clickHandler = () => {
-        props.onClick(props._id);
+        dispatch({ type: SET_CURRENT_INGREDIENT, id: props._id })
     }
 
     const { ref, inView } = useInView({
@@ -22,7 +33,7 @@ const Ingredient = (props) => {
     }, [inView, props])
 
     return(
-        <article ref={ref} className={styles.ingredient} onClick={clickHandler}>
+        <article ref={combineRefs(ref, dragRef)} className={styles.ingredient} onClick={clickHandler}>
             { props.count > 0 && <Counter count={props.count} size="default" /> }
             <img src={props.image} alt={props.name} />
             <div className={`${styles.price} pt-1 pb-1`}>
@@ -35,6 +46,6 @@ const Ingredient = (props) => {
 
 }
 
-Ingredient.propTypes = propTypes.order;
+Ingredient.propTypes = propTypes.ingredient;
 
 export default Ingredient;
