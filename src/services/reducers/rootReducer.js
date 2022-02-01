@@ -1,5 +1,4 @@
 import { combineReducers } from "redux";
-import { v4 as uuidv4 } from 'uuid';
 
 import { 
     INGREDIENTS_REQUEST_IN_PROGRESS,
@@ -121,7 +120,7 @@ const burgerReducer = (state = initialState, action) => {
                     return el.type === 'bun' ? state.ingredients.find(ingredient => ingredient._id === action.id) : el;
                 })] : [
                     ...state.constructorItems,
-                    ...[{...state.ingredients.find(el => el._id === action.id), key: uuidv4()}]
+                    ...[{...state.ingredients.find(el => el._id === action.id), key: action.key}]
                 ]
             }
         }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import CONSTANTS from "../../utils/constants";
+import { v4 as uuidv4 } from 'uuid';
 
 export const INGREDIENTS_REQUEST_IN_PROGRESS = 'INGREDIENTS_REQUEST_IN_PROGRESS';
 export const INGREDIENTS_REQUEST_SUCCESS = 'INGREDIENTS_REQUEST_SUCCESS';
@@ -14,6 +15,7 @@ export const CLEAN_CURRENT_INGREDIENT = 'CLEAN_CURRENT_INGREDIENT';
 export const CLEAN_ORDER = 'CLEAN_ORDER';
 
 export const ADD_CONSTRUCTOR_ITEM = 'ADD_CONSTRUCTOR_ITEM';
+
 export const DELETE_CONSTRUCTOR_ITEM = 'DELETE_CONSTRUCTOR_ITEM';
 
 export const MOVE_CONSTRUCTOR_ITEM = 'MOVE_CONSTRUCTOR_ITEM';
@@ -21,6 +23,10 @@ export const MOVE_CONSTRUCTOR_ITEM = 'MOVE_CONSTRUCTOR_ITEM';
 export const SET_CURRENT_INGREDIENT = 'SET_CURRENT_INGREDIENT';
 
 export const CLEAN_CONTRUCTOR = 'CLEAN_CONTRUCTOR';
+
+export const generateContructorItem = (item) => {
+    return { type: ADD_CONSTRUCTOR_ITEM, id: item.id, itemType: item.type, key: uuidv4() }
+}
 
 export const sendOrder = () => (dispatch, getState) => {
 

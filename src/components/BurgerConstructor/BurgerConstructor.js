@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import Modal from '../Modal/Modal';
 import OrderDetails from '../OrderDetails/OrderDetails';
 import { useSelector, useDispatch } from 'react-redux';
-import { CLEAN_CONTRUCTOR, sendOrder } from '../../services/actions';
+import { CLEAN_CONTRUCTOR, generateContructorItem, sendOrder } from '../../services/actions';
 import { useDrop } from 'react-dnd';
 import { CLEAN_ORDER, ADD_CONSTRUCTOR_ITEM } from '../../services/actions';
 import { v4 as uuidv4 } from 'uuid';
@@ -29,7 +29,7 @@ const BurgerConstructor = () => {
         accept: "ingredient",
         drop(item) {
             if(constructorItems.length > 0 || item.type === 'bun') {
-                dispatch({ type: ADD_CONSTRUCTOR_ITEM, id: item.id, itemType: item.type })
+                dispatch(generateContructorItem(item));
             }
         },
         collect: monitor => ({
